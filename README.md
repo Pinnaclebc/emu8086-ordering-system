@@ -8,7 +8,7 @@ This project is designed for beginners learning basic assembly language concepts
 
 ## Features
 
-- Displays a fixed menu of food items and prices.
+- Displays a fixed menu of food items and decimal PHP prices.
 - Accepts an item choice from the user.
 - Displays the selected item and its price.
 - Accepts a one-digit payment amount.
@@ -42,9 +42,9 @@ This project is designed for beginners learning basic assembly language concepts
 1. Run the program.
 2. Select an item by entering:
 
-   - `1` for Burger — 5
-   - `2` for Fries — 3
-   - `3` for Soda — 2
+   - `1` for Burger — 59.50 PHP
+   - `2` for Fries — 35.00 PHP
+   - `3` for Soda — 20.00 PHP
 
 3. Enter a one-digit payment amount.
 4. The program displays the calculated change.

@@ -6,16 +6,19 @@
 .STACK 100H
 
 .DATA
-menuTitle       DB 0DH, 0AH, '===== SIMPLE ORDERING SYSTEM =====', 0DH, 0AH, '$'
-item1Text      DB '1. Burger  - $5', 0DH, 0AH, '$'
-item2Text      DB '2. Fries   - $3', 0DH, 0AH, '$'
-item3Text      DB '3. Soda    - $2', 0DH, 0AH, '$'
-chooseText     DB 'Choose an item (1-3): $'
+menuTitle       DB 0DH, 0AH, '==== SIMPLE ORDERING SYSTEM ====', 0DH, 0AH, '$'
+item1Text      DB '1. Burger - 59.50 PHP', 0DH, 0AH, '$'
+item2Text      DB '2. Fries  - 35.00 PHP', 0DH, 0AH, '$'
+item3Text      DB '3. Soda   - 20.00 PHP', 0DH, 0AH, '$'
+chooseText     DB 'Choose an item: $'
 selectedText   DB 'You selected: $'
 burgerText     DB 'Burger', '$'
 friesText      DB 'Fries', '$'
 sodaText       DB 'Soda', '$'
 priceText      DB 0DH, 0AH, 'Price: $'
+price1Text      DB '59.50 PHP', '$'
+price2Text      DB '35.00 PHP', '$'
+price3Text      DB '20.00 PHP', '$'
 paymentText    DB 0DH, 0AH, 'Enter payment (one digit): $'
 changeText     DB 0DH, 0AH, 'Your change is: $'
 thankYouText   DB 0DH, 0AH, 'Thank you for ordering!', 0DH, 0AH, '$'
@@ -24,6 +27,7 @@ invalidText    DB 0DH, 0AH, 'Invalid choice.', 0DH, 0AH, '$'
 total          DB 0
 payment        DB 0
 change         DB 0
+pricePointer    DW 0
 
 .CODE
 main PROC
@@ -32,14 +36,15 @@ main PROC
 
     CALL displayMenu
     CALL getChoice
+    MOV BL, AL
     CALL newline
 
     ; Select an item and store its fixed price in total.
-    CMP AL, '1'
+    CMP BL, '1'
     JE chooseBurger
-    CMP AL, '2'
+    CMP BL, '2'
     JE chooseFries
-    CMP AL, '3'
+    CMP BL, '3'
     JE chooseSoda
 
     ; Any other key is rejected.
@@ -50,16 +55,19 @@ main PROC
 
 chooseBurger:
     MOV DX, OFFSET burgerText
+    MOV pricePointer, OFFSET price1Text
     MOV total, 5
     JMP showOrder
 
 chooseFries:
     MOV DX, OFFSET friesText
+    MOV pricePointer, OFFSET price2Text
     MOV total, 3
     JMP showOrder
 
 chooseSoda:
     MOV DX, OFFSET sodaText
+    MOV pricePointer, OFFSET price3Text
     MOV total, 2
 
 showOrder:
@@ -71,12 +79,12 @@ showOrder:
     POP DX
     INT 21H
 
-    ; Display the fixed price.
+    ; Display the fixed decimal PHP price.
     MOV AH, 09H
     MOV DX, OFFSET priceText
     INT 21H
-    MOV AL, total
-    CALL printDigit
+    MOV DX, pricePointer
+    INT 21H
 
     ; Read payment, then subtract the price from it.
     MOV AH, 09H

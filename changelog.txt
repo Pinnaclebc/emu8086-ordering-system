@@ -1,2 +1,5 @@
 [2026/10/10 07:14 PM] Added a modular emu8086 basic ordering system with fixed menu items, prices, payment, and change calculation.
 [2026/10/10 07:15 PM] Connected the required newline procedure to the item and payment input flow.
+[2026/10/10 07:30 PM] Fixed item selection being overwritten by newline output and updated the menu to show PHP prices.
+[2026/10/10 07:30 PM] Updated the README usage examples to match the PHP prices shown by the menu.
+[2026/10/10 07:30 PM] Made the selected-order output display the same fixed decimal PHP price as the menu.
