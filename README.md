@@ -39,16 +39,6 @@ This project is designed for beginners learning basic assembly language concepts
 3. Open `ordering_system.asm` in emu8086.
 4. Assemble and run the program.
 
-## Usage
-
-1. Run the program.
-2. Select an item by entering:
-
-   - `1` for Burger — 5.00 PHP
-   - `2` for Fries — 3.00 PHP
-   - `3` for Soda — 2.00 PHP
-   - `4` to exit
-
 3. Enter a payment from `0` to `255`, such as `100`.
 4. The program displays the calculated change.
 5. Enter `Y` to place another order or `N` to exit.
