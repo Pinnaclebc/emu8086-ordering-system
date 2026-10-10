@@ -7,12 +7,12 @@
 
 .DATA
 menuTitle       DB 0DH, 0AH, '==== SIMPLE ORDERING SYSTEM ====', 0DH, 0AH, '$'
-item1Text      DB '1. Burger - 5.00 PHP', 0DH, 0AH, '$'
-item2Text      DB '2. Fries  - 3.00 PHP', 0DH, 0AH, '$'
-item3Text      DB '3. Soda   - 2.00 PHP', 0DH, 0AH, '$'
+item1Text      DB '1. Burger - 70.00 PHP', 0DH, 0AH, '$'
+item2Text      DB '2. Fries  - 55.00 PHP', 0DH, 0AH, '$'
+item3Text      DB '3. Soda   - 45.00 PHP', 0DH, 0AH, '$'
 exitText       DB '4. Exit', 0DH, 0AH, '$'
 chooseText     DB 'Choose an item: $'
-selectedText   DB 'You selected: $'
+selectedText    DB 'You selected: $'
 burgerText      DB 'Burger', '$'
 friesText       DB 'Fries', '$'
 sodaText        DB 'Soda', '$'
@@ -40,22 +40,25 @@ main PROC
 
     JMP mainMenu
 
+
+
 chooseBurger:
     MOV DX, OFFSET burgerText
     MOV pricePointer, OFFSET price1Text
-    MOV total, 5
+    ;Change the price here.
+    MOV total, 70
     JMP showOrder
 
 chooseFries:
     MOV DX, OFFSET friesText
     MOV pricePointer, OFFSET price2Text
-    MOV total, 3
+    MOV total, 55
     JMP showOrder
 
 chooseSoda:
     MOV DX, OFFSET sodaText
     MOV pricePointer, OFFSET price3Text
-    MOV total, 2
+    MOV total, 45
 
 showOrder:
     ; Display the selected item.
