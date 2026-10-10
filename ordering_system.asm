@@ -10,6 +10,7 @@ menuTitle       DB 0DH, 0AH, '==== SIMPLE ORDERING SYSTEM ====', 0DH, 0AH, '$'
 item1Text      DB '1. Burger - 5.00 PHP', 0DH, 0AH, '$'
 item2Text      DB '2. Fries  - 3.00 PHP', 0DH, 0AH, '$'
 item3Text      DB '3. Soda   - 2.00 PHP', 0DH, 0AH, '$'
+exitText       DB '4. Exit', 0DH, 0AH, '$'
 chooseText     DB 'Choose an item: $'
 selectedText   DB 'You selected: $'
 burgerText      DB 'Burger', '$'
@@ -143,12 +144,14 @@ mainMenu:
     JE chooseFries
     CMP BL, '3'
     JE chooseSoda
+    CMP BL, '4'
+    JE programExit
 
-    ; Any other key is rejected.
+    ; Invalid choices return to the main menu.
     MOV AH, 09H
     MOV DX, OFFSET invalidText
     INT 21H
-    JMP programExit
+    JMP mainMenu
 
 programExit:
     MOV AH, 4CH
@@ -165,6 +168,8 @@ displayMenu PROC
     MOV DX, OFFSET item2Text
     INT 21H
     MOV DX, OFFSET item3Text
+    INT 21H
+    MOV DX, OFFSET exitText
     INT 21H
     RET
 displayMenu ENDP

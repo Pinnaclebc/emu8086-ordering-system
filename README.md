@@ -9,7 +9,8 @@ This project is designed for beginners learning basic assembly language concepts
 ## Features
 
 - Displays a fixed menu of food items and decimal PHP prices.
-- Accepts an item choice from the user.
+- Provides a `4. Exit` option at the main menu.
+- Returns to the main menu when an invalid menu option is entered.
 - Accepts any valid 8-bit decimal payment from 0 to 255.
 - Rejects invalid and oversized payment input.
 - Displays multi-digit change values.
@@ -46,9 +47,10 @@ This project is designed for beginners learning basic assembly language concepts
    - `1` for Burger — 5.00 PHP
    - `2` for Fries — 3.00 PHP
    - `3` for Soda — 2.00 PHP
+   - `4` to exit
 
 3. Enter a payment from `0` to `255`, such as `100`.
 4. The program displays the calculated change.
 5. Enter `Y` to place another order or `N` to exit.
 
-The menu items and prices are fixed directly in the assembly source code.
+Invalid menu selections do not close the program; they return to the main menu.
