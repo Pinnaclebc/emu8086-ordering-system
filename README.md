@@ -42,9 +42,9 @@ This project is designed for beginners learning basic assembly language concepts
 1. Run the program.
 2. Select an item by entering:
 
-   - `1` for Burger — 59.50 PHP
-   - `2` for Fries — 35.00 PHP
-   - `3` for Soda — 20.00 PHP
+   - `1` for Burger — 5.00 PHP
+   - `2` for Fries — 3.00 PHP
+   - `3` for Soda — 2.00 PHP
 
 3. Enter a one-digit payment amount.
 4. The program displays the calculated change.

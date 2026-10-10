@@ -3,3 +3,4 @@
 [2026/10/10 07:30 PM] Fixed item selection being overwritten by newline output and updated the menu to show PHP prices.
 [2026/10/10 07:30 PM] Updated the README usage examples to match the PHP prices shown by the menu.
 [2026/10/10 07:30 PM] Made the selected-order output display the same fixed decimal PHP price as the menu.
+[2026/10/10 07:30 PM] Matched the decimal-formatted menu prices with the whole-number values used by the simple change calculation.
