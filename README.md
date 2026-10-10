@@ -2,7 +2,7 @@
 
 ## Description
 
-A basic ordering system written in emu8086 assembly language. The program displays a fixed menu, accepts an item selection, receives payment, and calculates the change.
+A basic ordering system written in emu8086 assembly language. The program displays a fixed menu, accepts an item selection, receives a payment from 0 to 255, and calculates the change.
 
 This project is designed for beginners learning basic assembly language concepts.
 
@@ -10,9 +10,10 @@ This project is designed for beginners learning basic assembly language concepts
 
 - Displays a fixed menu of food items and decimal PHP prices.
 - Accepts an item choice from the user.
-- Displays the selected item and its price.
-- Accepts a one-digit payment amount.
-- Calculates change using subtraction.
+- Accepts any valid 8-bit decimal payment from 0 to 255.
+- Rejects invalid and oversized payment input.
+- Displays multi-digit change values.
+- Asks whether the user wants to place another order.
 - Uses procedures to keep the program modular.
 - Includes the required `newline` procedure.
 - Uses DOS interrupt `21H` for input and output.
@@ -46,7 +47,8 @@ This project is designed for beginners learning basic assembly language concepts
    - `2` for Fries — 3.00 PHP
    - `3` for Soda — 2.00 PHP
 
-3. Enter a one-digit payment amount.
+3. Enter a payment from `0` to `255`, such as `100`.
 4. The program displays the calculated change.
+5. Enter `Y` to place another order or `N` to exit.
 
 The menu items and prices are fixed directly in the assembly source code.

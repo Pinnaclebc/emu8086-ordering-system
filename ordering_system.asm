@@ -12,21 +12,24 @@ item2Text      DB '2. Fries  - 3.00 PHP', 0DH, 0AH, '$'
 item3Text      DB '3. Soda   - 2.00 PHP', 0DH, 0AH, '$'
 chooseText     DB 'Choose an item: $'
 selectedText   DB 'You selected: $'
-burgerText     DB 'Burger', '$'
-friesText      DB 'Fries', '$'
-sodaText       DB 'Soda', '$'
-priceText      DB 0DH, 0AH, 'Price: $'
+burgerText      DB 'Burger', '$'
+friesText       DB 'Fries', '$'
+sodaText        DB 'Soda', '$'
+priceText       DB 0DH, 0AH, 'Price: $'
 price1Text      DB '5.00 PHP', '$'
 price2Text      DB '3.00 PHP', '$'
 price3Text      DB '2.00 PHP', '$'
-paymentText    DB 0DH, 0AH, 'Enter payment (one digit): $'
-changeText     DB 0DH, 0AH, 'Your change is: $'
-thankYouText   DB 0DH, 0AH, 'Thank you for ordering!', 0DH, 0AH, '$'
-invalidText    DB 0DH, 0AH, 'Invalid choice.', 0DH, 0AH, '$'
+paymentText     DB 0DH, 0AH, 'Enter payment (0-255): $'
+changeText      DB 0DH, 0AH, 'Your change is: $'
+thankYouText    DB 0DH, 0AH, 'Thank you for ordering!', 0DH, 0AH, '$'
+invalidText     DB 0DH, 0AH, 'Invalid choice.', 0DH, 0AH, '$'
+invalidPaymentText DB 0DH, 0AH, 'Please enter a number from 0 to 255.', 0DH, 0AH, '$'
+insufficientText DB 0DH, 0AH, 'Payment is not enough for this item.', 0DH, 0AH, '$'
+againText      DB 0DH, 0AH, 'Would you like to order again? (Y/N): $'
 
-total          DB 0
-payment        DB 0
-change         DB 0
+total           DB 0
+payment         DB 0
+change          DB 0
 pricePointer    DW 0
 
 .CODE
@@ -34,24 +37,7 @@ main PROC
     MOV AX, @DATA
     MOV DS, AX
 
-    CALL displayMenu
-    CALL getChoice
-    MOV BL, AL
-    CALL newline
-
-    ; Select an item and store its fixed price in total.
-    CMP BL, '1'
-    JE chooseBurger
-    CMP BL, '2'
-    JE chooseFries
-    CMP BL, '3'
-    JE chooseSoda
-
-    ; Any other key is rejected.
-    MOV AH, 09H
-    MOV DX, OFFSET invalidText
-    INT 21H
-    JMP programExit
+    JMP mainMenu
 
 chooseBurger:
     MOV DX, OFFSET burgerText
@@ -79,22 +65,25 @@ showOrder:
     POP DX
     INT 21H
 
-    ; Display the fixed decimal PHP price.
+    ; Display the fixed price.
     MOV AH, 09H
     MOV DX, OFFSET priceText
     INT 21H
     MOV DX, pricePointer
     INT 21H
 
-    ; Read payment, then subtract the price from it.
+    ; Read an 8-bit payment, then subtract the price from it.
     MOV AH, 09H
     MOV DX, OFFSET paymentText
     INT 21H
-    CALL readDigit
-    CALL newline
+    CALL readNumber
+    JC invalidPayment
     MOV payment, AL
+    CALL newline
 
     MOV AL, payment
+    CMP AL, total
+    JB insufficientPayment
     SUB AL, total
     MOV change, AL
 
@@ -103,11 +92,63 @@ showOrder:
     MOV DX, OFFSET changeText
     INT 21H
     MOV AL, change
-    CALL printDigit
+    CALL printNumber
 
     MOV AH, 09H
     MOV DX, OFFSET thankYouText
     INT 21H
+
+askAgain:
+    CALL askOrderAgain
+    CMP AL, 'Y'
+    JE restartOrder
+    CMP AL, 'y'
+    JE restartOrder
+    CMP AL, 'N'
+    JE programExit
+    CMP AL, 'n'
+    JE programExit
+
+    MOV AH, 09H
+    MOV DX, OFFSET invalidText
+    INT 21H
+    JMP askAgain
+
+restartOrder:
+    CALL newline
+    JMP mainMenu
+
+invalidPayment:
+    MOV AH, 09H
+    MOV DX, OFFSET invalidPaymentText
+    INT 21H
+    JMP showOrder
+
+insufficientPayment:
+    MOV AH, 09H
+    MOV DX, OFFSET insufficientText
+    INT 21H
+    JMP showOrder
+
+mainMenu:
+    CALL displayMenu
+    CALL getChoice
+    MOV BL, AL
+    CALL newline
+
+    ; Select an item and store its fixed price in total.
+    CMP BL, '1'
+    JE chooseBurger
+    CMP BL, '2'
+    JE chooseFries
+    CMP BL, '3'
+    JE chooseSoda
+
+    ; Any other key is rejected.
+    MOV AH, 09H
+    MOV DX, OFFSET invalidText
+    INT 21H
+    JMP programExit
 
 programExit:
     MOV AH, 4CH
@@ -138,13 +179,61 @@ getChoice PROC
     RET
 getChoice ENDP
 
-; Read one payment digit and convert ASCII to a number.
-readDigit PROC
+; Read a decimal number from 0 to 255.
+readNumber PROC
+    MOV BX, 0
+readNumberLoop:
     MOV AH, 01H
     INT 21H
+    CMP AL, 0DH
+    JE readNumberDone
+    CMP AL, '0'
+    JB readNumberInvalid
+    CMP AL, '9'
+    JA readNumberInvalid
+
     SUB AL, '0'
+    MOV DL, AL
+    MOV SI, BX
+    MOV BX, 0
+    MOV CX, 10
+
+multiplyByTen:
+    ADD BX, SI
+    DEC CX
+    JNZ multiplyByTen
+
+    CMP BX, 255
+    JA readNumberInvalid
+    ADD BL, DL
+    CMP BX, 255
+    JA readNumberInvalid
+    JMP readNumberLoop
+
+readNumberDone:
+    MOV AX, BX
+    CLC
     RET
-readDigit ENDP
+
+readNumberInvalid:
+readInvalidRest:
+    MOV AH, 01H
+    INT 21H
+    CMP AL, 0DH
+    JNE readInvalidRest
+    STC
+    RET
+readNumber ENDP
+
+; Read Y or N for another order.
+askOrderAgain PROC
+    MOV AH, 09H
+    MOV DX, OFFSET againText
+    INT 21H
+    MOV AH, 01H
+    INT 21H
+    RET
+askOrderAgain ENDP
 
 ; Convert a number from 0 to 9 into ASCII and print it.
 printDigit PROC
@@ -154,6 +243,52 @@ printDigit PROC
     INT 21H
     RET
 printDigit ENDP
+
+; Print an unsigned number from 0 to 255.
+printNumber PROC
+    MOV BL, 0
+
+hundredsLoop:
+    CMP AL, 100
+    JB tensStart
+    SUB AL, 100
+    INC BL
+    JMP hundredsLoop
+
+tensStart:
+    MOV BH, 0
+
+tensLoop:
+    CMP AL, 10
+    JB printNumberDigits
+    SUB AL, 10
+    INC BH
+    JMP tensLoop
+
+printNumberDigits:
+    CMP BL, 0
+    JE checkTens
+    PUSH AX
+    MOV AL, BL
+    CALL printDigit
+    POP AX
+
+checkTens:
+    CMP BL, 0
+    JNE printTens
+    CMP BH, 0
+    JE printOnes
+
+printTens:
+    PUSH AX
+    MOV AL, BH
+    CALL printDigit
+    POP AX
+
+printOnes:
+    CALL printDigit
+    RET
+printNumber ENDP
 
 ; Move to the next line.
 newline PROC

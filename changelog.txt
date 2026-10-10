@@ -4,3 +4,4 @@
 [2026/10/10 07:30 PM] Updated the README usage examples to match the PHP prices shown by the menu.
 [2026/10/10 07:30 PM] Made the selected-order output display the same fixed decimal PHP price as the menu.
 [2026/10/10 07:30 PM] Matched the decimal-formatted menu prices with the whole-number values used by the simple change calculation.
+[2026/10/10 07:34 PM] Added 0-255 payment input, multi-digit change output, invalid payment handling, and a repeat-order prompt.
