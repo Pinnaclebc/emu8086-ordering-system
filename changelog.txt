@@ -7,3 +7,4 @@
 [2026/10/10 07:34 PM] Added 0-255 payment input, multi-digit change output, invalid payment handling, and a repeat-order prompt.
 [2026/10/10 07:40 PM] Added a main-menu exit option and made invalid menu choices return to the menu.
 [2026/10/10 07:45 PM] Published the user's updated ordering system assembly source to the GitHub repository.
+[2026/10/10 07:46 PM] Updated the selected-item price strings to match the new menu prices.
